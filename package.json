@@ -1,0 +1,12 @@
+{
+  "name": "h3-studio-key-server",
+  "version": "1.0.0",
+  "description": "Free Serverless License Key Generator & HWID Verification Server on Vercel for H3 Studio Pro",
+  "main": "api/index.js",
+  "scripts": {
+    "start": "node api/index.js"
+  },
+  "engines": {
+    "node": ">=18.x"
+  }
+}

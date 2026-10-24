@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>H3 Studio Pro — Cổng Nhận Key & Quản Trị Bản Quyền</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0c0c0e;
+      --surface: #141417;
+      --surface-1: #101013;
+      --surface-2: #1c1c21;
+      --border: rgba(255, 255, 255, 0.08);
+      --gold: #c9ad7d;
+      --gold-light: #e5d1b0;
+      --text: #f4f4f5;
+      --muted: #a1a1aa;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      min-height: 100vh;
+      padding: 28px 16px 60px;
+    }
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      background: var(--surface);
+      border: 1px solid rgba(201, 173, 125, 0.28);
+      border-radius: 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand h1 {
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing: 0.2px;
+    }
+    .brand h1 span { color: var(--gold-light); }
+    .brand p { font-size: 11.5px; color: var(--muted); }
+    .tab-switch {
+      display: inline-flex;
+      background: var(--surface-1);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      gap: 4px;
+    }
+    .tab-btn {
+      padding: 7px 14px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12.5px;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+      transition: .15s;
+    }
+    .tab-btn.on {
+      background: rgba(201, 173, 125, 0.16);
+      color: var(--gold-light);
+      border: 1px solid rgba(201, 173, 125, 0.4);
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--gold-light);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .inp, .sel {
+      width: 100%;
+      background: var(--surface-1);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+    }
+    .inp:focus, .sel:focus {
+      border-color: var(--gold);
+    }
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 11px 18px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: .15s;
+    }
+    .btn-gold {
+      background: linear-gradient(135deg, #d8be94 0%, #b89863 100%);
+      color: #14120e;
+      box-shadow: 0 4px 16px rgba(201, 173, 125, 0.25);
+    }
+    .btn-gold:hover { filter: brightness(1.06); }
+    .btn-sub {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-sub:hover { border-color: var(--gold); color: var(--gold-light); }
+    .key-box {
+      background: #09090b;
+      border: 1.5px dashed rgba(201, 173, 125, 0.5);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      font-weight: 700;
+      color: #34d399;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 720px) {
+      .grid-2, .grid-4 { grid-template-columns: 1fr; }
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    th {
+      color: var(--muted);
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 10.5px;
+    }
+    .badge {
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 10.5px;
+      font-weight: 800;
+    }
+    .badge-ok { background: rgba(16, 185, 129, 0.16); color: #34d399; }
+    .badge-exp { background: rgba(239, 68, 68, 0.16); color: #f87171; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand">
+        <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#d8be94,#9e7f4f);color:#14120e;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px">H3</div>
+        <div>
+          <h1>H3 STUDIO <span>PRO</span> &mdash; KEY SERVER</h1>
+          <p>Hệ Thống Cấp Key Miễn Phí &amp; Quản Lý Bản Quyền Trên Vercel</p>
+        </div>
+      </div>
+      <div class="tab-switch">
+        <button class="tab-btn on" id="tab-user-btn" onclick="switchView('user')">🎁 Nhận Key Free &amp; Kiểm Tra</button>
+        <button class="tab-btn" id="tab-admin-btn" onclick="switchView('admin')">👑 Quản Trị Tạo Key (Admin)</button>
+      </div>
+    </div>
+
+    <!-- VIEW 1: NGƯỜI DÙNG NHẬN KEY FREE & KIỂM TRA -->
+    <div id="view-user">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">🎁 Nhận Key Dùng Thử H3 Studio Pro Miễn Phí</div>
+          <div class="card-sub">Bấm nút bên dưới để nhận ngay 1 mã Key bản quyền kích hoạt phần mềm <b>H3 Studio Pro</b> (Giới hạn 1 thiết bị / Key).</div>
+          <button class="btn btn-gold" id="btn-claim-free" onclick="claimFreeKey()" style="width:100%;padding:13px">
+            ✨ NHẬN KEY MIỄN PHÍ NGAY
+          </button>
+          <div id="free-key-result" style="display:none">
+            <div class="key-box">
+              <span id="free-key-text">H3PRO-...</span>
+              <button class="btn btn-sub" onclick="copyText(document.getElementById('free-key-text').textContent)" style="padding:6px 12px;font-size:11.5px">📋 Copy Key</button>
+            </div>
+            <div id="free-key-meta" style="font-size:11.5px;color:var(--muted);margin-top:8px"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🔍 Kiểm Tra Thời Hạn Key</div>
+          <div class="card-sub">Nhập mã Key của bạn để kiểm tra thời hạn còn lại và trạng thái thiết bị.</div>
+          <div style="display:flex;gap:8px">
+            <input type="text" id="check-key-inp" class="inp" placeholder="Dán mã Key (VD: H3PRO-6900ABCD-...)" style="font-family:'JetBrains Mono',monospace">
+            <button class="btn btn-sub" onclick="verifyUserKey()" style="white-space:nowrap">🔍 Kiểm Tra</button>
+          </div>
+          <div id="check-key-result" style="display:none;margin-top:12px;padding:12px;border-radius:10px;background:var(--surface-1);border:1px solid var(--border);font-size:12.5px;line-height:1.5"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 2: ADMIN TẠO KEY & QUẢN LÝ HWID -->
+    <div id="view-admin" style="display:none">
+      <div class="card" id="admin-login-card">
+        <div class="card-title">🔒 Đăng Nhập Quản Trị Viên (Admin)</div>
+        <div class="card-sub">Nhập mật khẩu Admin (cấu hình trong biến môi trường <code>ADMIN_PASSWORD</code> trên Vercel, mặc định: <code>admin123</code>).</div>
+        <div style="display:flex;gap:10px;max-width:460px">
+          <input type="password" id="admin-pass-inp" class="inp" placeholder="Nhập mật khẩu Admin..." onkeydown="if(event.key==='Enter')loginAdmin()">
+          <button class="btn btn-gold" onclick="loginAdmin()">🔓 Mở Bảng Tạo Key</button>
+        </div>
+      </div>
+
+      <div id="admin-main-panel" style="display:none">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+            <div>
+              <div class="card-title" style="margin:0">⚡ Tạo Key H3 Studio Pro Mới (1 Key hoặc Hàng Loạt)</div>
+              <div style="font-size:11.5px;color:var(--muted);margin-top:2px" id="storage-mode-badge">Đang kiểm tra chế độ lưu trữ...</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button class="btn btn-sub" id="btn-toggle-free" onclick="toggleFreeTrialMode()" style="padding:7px 12px;font-size:11.5px">🎁 Nhận Key Free: Đang BẬT</button>
+              <button class="btn btn-sub" onclick="loadAdminKeys()" style="padding:7px 12px;font-size:11.5px">🔄 Làm mới</button>
+            </div>
+          </div>
+
+          <div class="grid-4" style="margin-bottom:12px">
+            <div>
+              <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">⏱️ Thời hạn Key:</label>
+              <select id="gen-hours" class="sel">
+                <option value="24">1 Ngày (24 Giờ)</option>
+                <option value="72">3 Ngày (72 Giờ)</option>
+                <option value="168" selected>7 Ngày (1 Tuần)</option>
+                <option value="720">30 Ngày (1 Tháng)</option>
+                <option value="2160">90 Ngày (3 Tháng)</option>
+                <option value="8760">365 Ngày (1 Năm)</option>
+                <option value="876000">♾️ Vĩnh Viễn (Lifetime)</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">🔢 Số lượng Key tạo:</label>
+              <input type="number" id="gen-count" class="inp" value="1" min="1" max="100">
+            </div>
+            <div>
+              <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">💻 Số máy tối đa / Key:</label>
+              <input type="number" id="gen-devices" class="inp" value="1" min="1" max="50">
+            </div>
+            <div>
+              <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">📝 Ghi chú khách hàng:</label>
+              <input type="text" id="gen-note" class="inp" placeholder="VD: Khách VIP Zalo...">
+            </div>
+          </div>
+
+          <button class="btn btn-gold" onclick="generateKeysAdmin()" style="width:100%;padding:12px">
+            🚀 TẠO KEY BẢN QUYỀN NGAY
+          </button>
+
+          <div id="admin-gen-output" style="display:none;margin-top:14px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+              <span style="font-size:12px;font-weight:800;color:#34d399">✅ Danh sách Key vừa tạo:</span>
+              <button class="btn btn-sub" onclick="copyText(document.getElementById('admin-gen-textarea').value)" style="padding:5px 10px;font-size:11px">📋 Copy Tất Cả</button>
+            </div>
+            <textarea id="admin-gen-textarea" class="inp" rows="4" readonly style="font-family:'JetBrains Mono',monospace;color:#e5d1b0"></textarea>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📋 Danh Sách Key Đã Cấp &amp; Quản Lý Thiết Bị (HWID)</div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>Mã Key</th>
+                  <th>Ghi Chú</th>
+                  <th>Hết Hạn</th>
+                  <th>Thiết Bị (HWID)</th>
+                  <th>Trạng Thái</th>
+                  <th>Thao Tác</th>
+                </tr>
+              </thead>
+              <tbody id="admin-keys-tbody">
+                <tr><td colspan="6" style="color:var(--muted);text-align:center">Chưa có dữ liệu...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let adminPass = localStorage.getItem('h3_key_admin_pass') || '';
+    let allowFreeTrial = true;
+
+    function switchView(v) {
+      document.getElementById('view-user').style.display = v === 'user' ? 'block' : 'none';
+      document.getElementById('view-admin').style.display = v === 'admin' ? 'block' : 'none';
+      document.getElementById('tab-user-btn').classList.toggle('on', v === 'user');
+      document.getElementById('tab-admin-btn').classList.toggle('on', v === 'admin');
+      if (v === 'admin' && adminPass) {
+        document.getElementById('admin-pass-inp').value = adminPass;
+        loginAdmin();
+      }
+    }
+
+    function copyText(txt) {
+      navigator.clipboard.writeText(txt || '').then(() => alert('📋 Đã sao chép Key: ' + txt));
+    }
+
+    async function claimFreeKey() {
+      const btn = document.getElementById('btn-claim-free');
+      btn.disabled = true;
+      btn.textContent = '⏳ Đang khởi tạo Key miễn phí...';
+      try {
+        const res = await fetch('/api/free-key', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({})
+        }).then(r => r.json());
+        if (res.ok) {
+          document.getElementById('free-key-result').style.display = 'block';
+          document.getElementById('free-key-text').textContent = res.key;
+          const expDate = new Date(res.expires_at).toLocaleString('vi-VN');
+          document.getElementById('free-key-meta').textContent = `✅ ${res.msg || 'Thành công'} • Hạn dùng tới: ${expDate}`;
+        } else {
+          alert('⚠️ ' + (res.error || 'Không thể nhận Key'));
+        }
+      } catch (e) {
+        alert('Lỗi kết nối: ' + e.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '✨ NHẬN KEY MIỄN PHÍ NGAY';
+      }
+    }
+
+    async function verifyUserKey() {
+      const key = document.getElementById('check-key-inp').value.trim();
+      const box = document.getElementById('check-key-result');
+      if (!key) return;
+      box.style.display = 'block';
+      box.textContent = '⏳ Đang kiểm tra...';
+      try {
+        const res = await fetch('/api/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key, hwid: '' })
+        }).then(r => r.json());
+        if (res.ok) {
+          const expStr = new Date(res.expires_at).toLocaleString('vi-VN');
+          box.innerHTML = `<span style="color:#34d399;font-weight:800">✅ Key Hợp Lệ!</span><br>• Thời hạn tới: <b>${expStr}</b> (Còn ~${res.remaining_hours} giờ)<br>• Thiết bị: <b>${res.used_devices}/${res.max_devices} máy</b>`;
+        } else {
+          box.innerHTML = `<span style="color:#f87171;font-weight:800">❌ ${res.error}</span>`;
+        }
+      } catch (e) {
+        box.textContent = 'Lỗi: ' + e.message;
+      }
+    }
+
+    async function loginAdmin() {
+      adminPass = document.getElementById('admin-pass-inp').value.trim();
+      if (!adminPass) return;
+      const res = await fetch('/api/admin/list', {
+        headers: { 'X-Admin-Password': adminPass }
+      }).then(r => r.json());
+      if (!res.ok) {
+        alert('❌ ' + (res.error || 'Sai mật khẩu Admin'));
+        return;
+      }
+      localStorage.setItem('h3_key_admin_pass', adminPass);
+      document.getElementById('admin-login-card').style.display = 'none';
+      document.getElementById('admin-main-panel').style.display = 'block';
+      renderAdminData(res);
+    }
+
+    async function loadAdminKeys() {
+      const res = await fetch('/api/admin/list', {
+        headers: { 'X-Admin-Password': adminPass }
+      }).then(r => r.json());
+      if (res.ok) renderAdminData(res);
+    }
+
+    function renderAdminData(res) {
+      allowFreeTrial = Boolean(res.allow_free_trial);
+      const btnFree = document.getElementById('btn-toggle-free');
+      btnFree.textContent = allowFreeTrial ? '🎁 Nhận Key Free: Đang BẬT' : '🔒 Nhận Key Free: Đang TẮT';
+      btnFree.style.color = allowFreeTrial ? '#34d399' : '#f87171';
+
+      const stBadge = document.getElementById('storage-mode-badge');
+      stBadge.innerHTML = res.persistent_storage
+        ? '🟢 Đang kết nối GitHub Gist Database (Lưu trữ vĩnh viễn & Khóa HWID từ xa)'
+        : '⚡ Chế độ Signed Key + RAM (Hoạt động ngay lập tức 0 cấu hình; thêm GITHUB_TOKEN + GIST_ID nếu muốn lưu DB vĩnh viễn)';
+
+      const tbody = document.getElementById('admin-keys-tbody');
+      const keys = res.keys || [];
+      if (!keys.length) {
+        tbody.innerHTML = '<tr><td colspan="6" style="color:var(--muted);text-align:center">Chưa có Key nào được tạo.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = keys.map(k => {
+        const expired = Date.now() > k.expires_at;
+        const statusHtml = k.banned
+          ? '<span class="badge badge-exp">Đã khóa</span>'
+          : (expired ? '<span class="badge badge-exp">Hết hạn</span>' : '<span class="badge badge-ok">Hoạt động</span>');
+        const hwids = Array.isArray(k.hwids) ? k.hwids : [];
+        return `
+          <tr>
+            <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#e5d1b0">${k.key}</td>
+            <td>${k.note || ''}</td>
+            <td>${new Date(k.expires_at).toLocaleString('vi-VN')}</td>
+            <td>${hwids.length}/${k.max_devices || 1} máy ${hwids.length ? `<div style="font-size:10px;color:var(--muted)">${hwids.join(', ')}</div>` : ''}</td>
+            <td>${statusHtml}</td>
+            <td>
+              <div style="display:flex;gap:5px;flex-wrap:wrap">
+                <button class="btn btn-sub" style="padding:4px 8px;font-size:10.5px" onclick="copyText('${k.key}')">📋</button>
+                <button class="btn btn-sub" style="padding:4px 8px;font-size:10.5px" onclick="adminKeyAction('${k.key}','reset_hwid')" title="Reset HWID để đổi máy">🔄 Reset Máy</button>
+                <button class="btn btn-sub" style="padding:4px 8px;font-size:10.5px" onclick="adminKeyAction('${k.key}','toggle_ban')">${k.banned ? '🔓 Mở' : '🔒 Khóa'}</button>
+                <button class="btn btn-sub" style="padding:4px 8px;font-size:10.5px;color:#f87171" onclick="adminKeyAction('${k.key}','delete')">🗑️</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function generateKeysAdmin() {
+      const hours = Number(document.getElementById('gen-hours').value || 168);
+      const count = Number(document.getElementById('gen-count').value || 1);
+      const max_devices = Number(document.getElementById('gen-devices').value || 1);
+      const note = document.getElementById('gen-note').value.trim();
+      const res = await fetch('/api/admin/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Admin-Password': adminPass },
+        body: JSON.stringify({ hours, count, max_devices, note })
+      }).then(r => r.json());
+      if (res.ok) {
+        const outBox = document.getElementById('admin-gen-output');
+        outBox.style.display = 'block';
+        document.getElementById('admin-gen-textarea').value = (res.created || []).map(x => x.key).join('\n');
+        loadAdminKeys();
+      } else {
+        alert('Lỗi: ' + res.error);
+      }
+    }
+
+    async function toggleFreeTrialMode() {
+      const res = await fetch('/api/admin/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Admin-Password': adminPass },
+        body: JSON.stringify({ action: 'toggle_trial_config', allow_free_trial: !allowFreeTrial })
+      }).then(r => r.json());
+      if (res.ok) loadAdminKeys();
+    }
+
+    async function adminKeyAction(key, action) {
+      await fetch('/api/admin/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Admin-Password': adminPass },
+        body: JSON.stringify({ key, action })
+      });
+      loadAdminKeys();
+    }
+
+    if (window.location.pathname === '/admin') {
+      switchView('admin');
+    }
+  </script>
+</body>
+</html>

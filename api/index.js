@@ -247,7 +247,7 @@ async function handler(req, res) {
       if (rec.hwids.length >= (rec.max_devices || 1)) {
         return sendJson(res, 403, {
           ok: false,
-          error: `Key này đã đạt giới hạn thiết bị (${rec.hwids.length}/${rec.max_devices} máy). Vui lòng liên hệ Admin để Reset HWID!`
+          error: `Key này đã đạt giới hạn thiết bị (${rec.hwids.length}/${rec.max_devices} máy). Vui lòng liên hệ Đường Thọ (Zalo: 0934415387 | genpixo.com | gencpu.com) để Reset HWID!`
         });
       }
       rec.hwids.push(hwid);

@@ -1,9 +1,9 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api?__path=/api/$1" },
-    { "source": "/admin", "destination": "/api?__path=/admin" },
-    { "source": "/admin/(.*)", "destination": "/api?__path=/admin" },
-    { "source": "/", "destination": "/api?__path=/" }
+    { "source": "/api/(.*)", "destination": "/api/index.js" },
+    { "source": "/admin", "destination": "/api/index.js" },
+    { "source": "/admin/(.*)", "destination": "/api/index.js" },
+    { "source": "/", "destination": "/api/index.js" }
   ]
 }

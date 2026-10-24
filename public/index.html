@@ -271,11 +271,12 @@
     <div id="view-admin" style="display:none">
       <div class="card" id="admin-login-card">
         <div class="card-title">🔒 Đăng Nhập Quản Trị Viên (Admin)</div>
-        <div class="card-sub">Nhập mật khẩu Admin (cấu hình trong biến môi trường <code>ADMIN_PASSWORD</code> trên Vercel, mặc định: <code>admin123</code>).</div>
+        <div class="card-sub">Nhập mật khẩu Quản trị viên để mở bảng tạo Key bản quyền và quản lý thiết bị (HWID).</div>
         <div style="display:flex;gap:10px;max-width:460px">
           <input type="password" id="admin-pass-inp" class="inp" placeholder="Nhập mật khẩu Admin..." onkeydown="if(event.key==='Enter')loginAdmin()">
-          <button class="btn btn-gold" onclick="loginAdmin()">🔓 Mở Bảng Tạo Key</button>
+          <button class="btn btn-gold" id="btn-admin-login" onclick="loginAdmin()">🔓 Mở Bảng Tạo Key</button>
         </div>
+        <div id="admin-login-err" style="display:none;margin-top:10px;color:#f87171;font-size:12.5px;font-weight:700"></div>
       </div>
 
       <div id="admin-main-panel" style="display:none">
@@ -425,18 +426,34 @@
 
     async function loginAdmin() {
       adminPass = document.getElementById('admin-pass-inp').value.trim();
-      if (!adminPass) return;
-      const res = await fetch('/api/admin/list', {
-        headers: { 'X-Admin-Password': adminPass }
-      }).then(r => r.json());
-      if (!res.ok) {
-        alert('❌ ' + (res.error || 'Sai mật khẩu Admin'));
+      const errEl = document.getElementById('admin-login-err');
+      const btn = document.getElementById('btn-admin-login');
+      if (!adminPass) {
+        if (errEl) { errEl.style.display = 'block'; errEl.textContent = '⚠️ Vui lòng nhập mật khẩu Admin!'; }
         return;
       }
-      localStorage.setItem('h3_key_admin_pass', adminPass);
-      document.getElementById('admin-login-card').style.display = 'none';
-      document.getElementById('admin-main-panel').style.display = 'block';
-      renderAdminData(res);
+      if (errEl) errEl.style.display = 'none';
+      if (btn) { btn.disabled = true; btn.textContent = '⏳ Đang mở...'; }
+      try {
+        const r = await fetch('/api/admin/list', {
+          headers: { 'X-Admin-Password': adminPass }
+        });
+        const res = await r.json();
+        if (!res.ok) {
+          if (errEl) { errEl.style.display = 'block'; errEl.textContent = '❌ ' + (res.error || 'Sai mật khẩu Admin'); }
+          else alert('❌ ' + (res.error || 'Sai mật khẩu Admin'));
+          return;
+        }
+        localStorage.setItem('h3_key_admin_pass', adminPass);
+        document.getElementById('admin-login-card').style.display = 'none';
+        document.getElementById('admin-main-panel').style.display = 'block';
+        renderAdminData(res);
+      } catch (e) {
+        if (errEl) { errEl.style.display = 'block'; errEl.textContent = '❌ Lỗi kết nối API: ' + e.message; }
+        else alert('Lỗi kết nối API: ' + e.message);
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = '🔓 Mở Bảng Tạo Key'; }
+      }
     }
 
     async function loadAdminKeys() {
@@ -527,7 +544,7 @@
       loadAdminKeys();
     }
 
-    if (window.location.pathname === '/admin') {
+    if (window.location.pathname.startsWith('/admin')) {
       switchView('admin');
     }
   </script>

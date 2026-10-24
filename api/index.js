@@ -6,7 +6,7 @@ const path = require('path');
 // CẤU HÌNH BẢO MẬT (Cài trong Vercel -> Settings -> Environment Variables)
 // ============================================================================
 const SECRET_KEY = process.env.KEY_SECRET || 'h3_studio_pro_luxury_secret_2026_x99';
-const ADMIN_PASS = process.env.ADMIN_PASSWORD || 'admin123';
+const ADMIN_PASS = process.env.ADMIN_PASSWORD || 'Minhyang18';
 // Tùy chọn lưu trữ vĩnh viễn miễn phí qua GitHub Gist (Nếu muốn khóa HWID & thu hồi Key từ xa):
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '';
 const GIST_ID = process.env.GIST_ID || '';
@@ -146,15 +146,18 @@ async function handler(req, res) {
   }
 
   const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-  const pathname = urlObj.pathname;
+  const pathname = urlObj.searchParams.get('__path') || urlObj.pathname;
 
-  // Serve UI nếu truy cập / hoặc /admin khi chạy local
-  if (pathname === '/' || pathname === '/admin' || pathname === '/public/index.html') {
+  // Serve UI nếu truy cập / hoặc /admin
+  if (pathname === '/' || pathname === '/admin' || pathname.startsWith('/admin/') || pathname === '/public/index.html') {
     try {
-      const htmlPath = path.join(__dirname, '..', 'public', 'index.html');
+      const uiPath1 = path.join(__dirname, 'ui.html');
+      const uiPath2 = path.join(__dirname, '..', 'public', 'index.html');
+      const htmlPath = fs.existsSync(uiPath1) ? uiPath1 : uiPath2;
       const html = fs.readFileSync(htmlPath, 'utf-8');
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
       return res.end(html);
     } catch (e) {
       return sendJson(res, 200, { ok: true, service: 'H3 Studio Pro Key Server' });
